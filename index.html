@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- UPDATED TITLE -->
     <title>Az Captain Currency Exchange</title>
-    <!-- ADDED ICON -->
     <link rel="icon" type="image/png" href="https://imgbed.captainzeqi.com/file/1758348585439_黑白路飞透明背景.png">
     
     <!-- Load Tailwind CSS -->
@@ -70,13 +68,33 @@
             Enter an amount in any currency below to convert all others in real-time.
         </p>
 
-        <!-- Message/Loading Area -->
-        <div id="status-message" class="text-sm p-3 mb-6 rounded-lg bg-indigo-100 text-indigo-800 hidden" role="alert">
-            Loading...
+        <!-- 
+          OPTIMIZATION:
+          Added a new control bar for status, last update time, and refresh button.
+        -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <!-- Message/Loading Area -->
+            <div id="status-message" class="text-sm p-3 rounded-lg bg-indigo-100 text-indigo-800 hidden" role="alert">
+                Loading...
+            </div>
+            
+            <!-- NEW: Update Time and Refresh Button -->
+            <div class="flex items-center justify-between gap-4 sm:ml-auto">
+                 <!-- This span will show the last update time -->
+                 <span id="last-update-time" class="text-sm text-gray-500 whitespace-nowrap"></span>
+                 
+                 <!-- This button allows manual refresh -->
+                 <button id="refresh-button" class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow hover:bg-indigo-700 transition duration-150 flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M5 9a7 7 0 0114 0v1a7 7 0 01-14 0V9zm15 5v-5h-5" />
+                    </svg>
+                    <span>Refresh</span>
+                 </button>
+            </div>
         </div>
 
+
         <!-- Currency List Container - Now a responsive grid -->
-        <!-- Allows 2 cols on mobile, 3 on tablet, 4 on desktop, 5 on large desktop, and 6 on extra large screens -->
         <div id="currency-list" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
             <!-- Dynamic currency items will be injected here -->
         </div>
@@ -103,14 +121,14 @@
             EEK: "爱沙尼亚克朗", EGP: "埃及镑", ETB: "埃塞俄比亚比尔", FJD: "斐济元", FKP: "福克兰群岛镑",
             GBP: "英镑", GEL: "格鲁吉亚拉里", GGP: "根西岛镑", GHS: "加纳塞地", GIP: "直布罗陀镑",
             GMD: "冈比亚达拉西", GNF: "几内亚法郎", GTQ: "危地马拉格查尔", GYD: "圭亚那元", HKD: "港元",
-            HNL: "洪都拉斯伦皮拉", HRK: "克罗地亚库纳", HTG: "海地古德", HUF: "匈牙利福林", IDR: "印度尼西亚盾",
+            HNL: "洪都拉斯伦皮拉", HRK: "克罗地亚库纳", HTG: "海地古德", HUF: "匈利福林", IDR: "印度尼西亚盾",
             ILS: "以色列新谢克尔", INR: "印度卢比", IQD: "伊拉克第纳尔", IRR: "伊朗里亚尔", ISK: "冰岛克朗",
             JMD: "牙买加元", JOD: "约旦第纳尔", JPY: "日元", KES: "肯尼亚先令", KGS: "吉尔吉斯斯坦索姆",
             KHR: "柬埔寨瑞尔", KMF: "科摩罗法郎", KPW: "朝鲜元", KRW: "韩元", KWD: "科威特第纳尔",
             KYD: "开曼群岛元", KZT: "哈萨克斯坦坚戈", LAK: "老挝基普", LBP: "黎巴嫩镑", LKR: "斯里兰卡卢比",
             LRD: "利比里亚元", LSL: "莱索托洛蒂", LTL: "立陶宛立特", LVL: "拉脱维亚拉特", LYD: "利比亚第纳尔",
             MAD: "摩洛哥迪拉姆", MDL: "摩尔多瓦列伊", MGA: "马达加斯加阿里亚里", MKD: "马其顿第纳尔", MMK: "缅甸元",
-            MNT: "蒙古图格里克", MOP: "澳门元", MRO: "毛里塔尼亚乌吉亚", MTL: "马耳他里拉", MUR: "毛里求斯卢比",
+            MNT: "蒙古图格里克", MOP: "澳门元", MRO: "毛里塔尼亚乌吉亚", MTL: "马耳他里拉", MUR: "毛利求斯卢比",
             MVR: "马尔代夫拉菲亚", MWK: "马拉维克瓦查", MXN: "墨西哥比索", MYR: "马来西亚林吉特", MZN: "莫桑比克梅蒂卡尔",
             NAD: "纳米比亚元", XPF: "太平洋法郎", NGN: "尼日利亚奈拉", NIO: "尼加拉瓜科多巴", NPR: "尼泊尔卢比",
             NZD: "新西兰元", OMR: "阿曼里亚尔", PAB: "巴拿马巴波亚", PEN: "秘鲁索尔", PGK: "巴布亚新几内亚基那",
@@ -127,30 +145,30 @@
 
 
         // --- Global State and Constants ---
-        const BASE_API_URL = "https://api.exchangerate-api.com/v4/latest/";
-        let conversionRates = {};
+        
+        // FIX: Switched to a more reliable, open-source API
+        const BASE_API_URL = "https://open.er-api.com/v6/latest/USD"; 
+        
+        let ratesFromApi = {}; 
         let currentBaseCurrency = 'USD';
         let currentAmount = 100;
-        let isFetching = false;
-        // Used for exponential backoff on fetch attempts
-        let retryDelay = 1000;
-        const MAX_RETRIES = 5;
+        
+        let lastUpdateTime = '';
+        const CACHE_KEY = 'cachedCurrencyRates';
 
         // --- DOM Elements ---
         const currencyListContainer = document.getElementById('currency-list');
         const statusMessage = document.getElementById('status-message');
+        // Note: refreshButton and lastUpdateSpan are grabbed in window.onload
 
         // --- Utility Functions ---
 
         /**
          * Shows a message in the status area.
-         * @param {string} msg - The message to display.
-         * @param {string} [type='info'] - The type of message ('info', 'error', 'loading').
          */
         function showStatus(msg, type = 'info') {
             statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-indigo-100', 'text-indigo-800');
-            // Reset colors
-            statusMessage.className = 'text-sm p-3 mb-6 rounded-lg';
+            statusMessage.className = 'text-sm p-3 rounded-lg';
             statusMessage.innerText = msg;
 
             if (type === 'error') {
@@ -186,117 +204,129 @@
 
 
         /**
-         * Fetches all exchange rates relative to the given base currency with exponential backoff.
-         * @param {string} base - The three-letter currency code (e.g., 'USD').
-         * @param {number} attempt - Current retry attempt count.
+         * OPTIMIZATION: Fetches latest rates (always based on USD) and updates cache.
+         * @param {boolean} [isManualRefresh=false] - True if triggered by user button press.
          */
-        async function fetchRates(base, attempt = 0) {
-            if (isFetching && attempt === 0) return; // Prevent simultaneous calls
-            if (attempt === 0) isFetching = true;
-
-            showStatus(`Fetching rates for ${base}... (Attempt ${attempt + 1})`, 'loading');
-
-            const url = BASE_API_URL + base;
+        async function fetchLatestRates(isManualRefresh = false) {
+            if (isManualRefresh) {
+                showStatus('Fetching latest rates...', 'loading');
+            }
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(BASE_API_URL);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
 
-                if (data.rates) {
-                    conversionRates = data.rates;
-                    currentBaseCurrency = base;
-                    updateAllInputs();
-                    updateCardStyles(); // Highlight the new base card
-                    hideStatus();
-                    retryDelay = 1000; // Reset delay on success
+                // FIX: Adapted to the new API's response format (open.er-api.com)
+                if (data.result === "success" && data.rates && data.time_last_update_utc) {
+                    ratesFromApi = data.rates;
+                    
+                    // This new API (open.er-api.com) *includes* USD:1 in its rates object.
+                    // The "CRITICAL FIX" (ratesFromApi['USD'] = 1.0;) is no longer needed.
+
+                    // FIX: Use the 'time_last_update_utc' field for a precise timestamp
+                    lastUpdateTime = new Date(data.time_last_update_utc).toLocaleString();
+                    
+                    // Save to cache
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ rates: ratesFromApi, time: lastUpdateTime }));
+                    
+                    if (isManualRefresh) {
+                        hideStatus();
+                    }
+                    
                 } else {
+                    // FIX: Log the actual data object if it's invalid
+                    console.error("Invalid rate data received from API:", data);
                     throw new Error("Invalid rate data received.");
                 }
 
             } catch (error) {
-                console.error("Error fetching exchange rates:", error);
-
-                if (attempt < MAX_RETRIES) {
-                    const delay = retryDelay * Math.pow(2, attempt);
-                    showStatus(`Retrying fetch in ${delay / 1000}s...`, 'error');
-                    
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    
-                    // Recursive call with incremented attempt
-                    await fetchRates(base, attempt + 1); 
-                } else {
-                    showStatus("Failed to fetch rates after multiple retries. Using cached/default values.", 'error');
-                    isFetching = false;
+                console.error("Error fetching new rates:", error);
+                if (isManualRefresh) {
+                    showStatus("Failed to fetch new rates. Using cached data.", 'error');
                 }
+                // On a non-manual (onload) fetch, we just fail silently and rely on cache.
             } finally {
-                if (attempt === MAX_RETRIES || Object.keys(conversionRates).length > 0) {
-                    isFetching = false;
-                }
+                // Update UI with whatever data we have (new or cached)
+                updateAllInputs();
+                updateCardStyles();
+                document.getElementById('last-update-time').innerText = `Last updated: ${lastUpdateTime}`;
             }
         }
 
         /**
-         * Updates all currency input fields based on the current base currency and amount.
+         * OPTIMIZATION: This function now calculates all conversions locally.
+         * It uses the single `ratesFromApi` object (which is USD-based).
          */
         function updateAllInputs() {
-            // Get all input fields
-            const inputs = document.querySelectorAll('#currency-list input');
+            if (Object.keys(ratesFromApi).length === 0) {
+                // Do nothing if we have no rates (e.g., on first load fail)
+                return;
+            }
 
+            // 1. Get the USD-to-Base rate (e.g., USD_TO_EUR)
+            const baseToUsdRate = ratesFromApi[currentBaseCurrency];
+            
+            // 2. Convert the user's input amount to its USD equivalent
+            // (e.g., 100 EUR / (USD_TO_EUR rate) = $105 USD)
+            let amountInUsd;
+            if (baseToUsdRate && baseToUsdRate !== 0) {
+                 amountInUsd = currentAmount / baseToUsdRate;
+            } else {
+                amountInUsd = 0; // Handle missing or zero rate
+            }
+
+
+            // 3. Loop through all inputs and convert from the USD equivalent
+            const inputs = document.querySelectorAll('#currency-list input');
             inputs.forEach(input => {
                 const currencyCode = input.dataset.currency;
                 
-                // Ensure only one base input shows the exact amount
+                // Don't recalculate the field the user is currently typing in
                 if (currencyCode === currentBaseCurrency) {
-                    // Update the value only if it's not the input currently being typed in
+                    // But if it's not focused, format it
                     if (input !== document.activeElement) {
-                         input.value = currentAmount.toFixed(2);
+                        input.value = currentAmount.toFixed(2);
                     }
+                    return; 
+                }
+
+                // Get the USD-to-Target rate (e.g., USD_TO_JPY)
+                const targetToUsdRate = ratesFromApi[currencyCode];
+
+                if (targetToUsdRate && amountInUsd > 0) {
+                    // (e.g., $105 USD * (USD_TO_JPY rate) = 15,000 JPY)
+                    const convertedValue = amountInUsd * targetToUsdRate;
+                    input.value = convertedValue.toFixed(4);
+                } else if (amountInUsd === 0) {
+                    input.value = '0.0000';
                 } else {
-                    const rate = conversionRates[currencyCode];
-                    if (rate !== undefined && currentAmount > 0) {
-                        const convertedValue = currentAmount * rate;
-                        input.value = convertedValue.toFixed(4);
-                    } else if (currentAmount === 0) {
-                        input.value = '0.0000';
-                    } else {
-                        input.value = 'N/A'; // Handle missing rate
-                    }
+                    input.value = 'N/A';
                 }
             });
         }
 
         /**
-         * Handles input events on all currency fields.
-         * @param {Event} event - The input event.
+         * OPTIMIZATION: This function is now much simpler.
+         * It just updates the global state and calls updateAllInputs().
+         * It NO LONGER triggers an API fetch.
          */
         function handleInput(event) {
             const inputElement = event.target;
-            // Sanitize input to allow numbers and decimal point
             const newAmount = parseFloat(inputElement.value.replace(/[^0-9.]/g, ''));
             const currencyCode = inputElement.dataset.currency;
 
-            // Simple validation: if not a number or empty, set amount to 0
-            if (isNaN(newAmount) || newAmount < 0) {
-                currentAmount = 0;
-            } else {
-                currentAmount = newAmount;
-            }
+            // Set the new base currency and amount from user input
+            currentBaseCurrency = currencyCode;
+            currentAmount = (isNaN(newAmount) || newAmount < 0) ? 0 : newAmount;
 
-            // 1. Check if the base currency has changed
-            if (currencyCode !== currentBaseCurrency) {
-                // Set the new base currency
-                currentBaseCurrency = currencyCode;
-                // Fetch new rates with the new currency as the base
-                fetchRates(currencyCode);
-            } else {
-                // Base currency is the same, just recalculate using existing rates
-                updateAllInputs();
-            }
-            // Update card styles immediately, even before the new fetch returns
+            // Recalculate all other fields locally
+            updateAllInputs();
+            
+            // Highlight the card being typed in
             updateCardStyles(); 
         }
 
@@ -306,28 +336,24 @@
         function renderCurrencyList() {
             currencyListContainer.innerHTML = '';
             
-            // Convert to an array for sorting, prioritizing USD/EUR/GBP/JPY
             const sortedCurrencies = Object.keys(countryList).sort((a, b) => {
                 const priority = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CNY', 'INR'];
                 const aP = priority.indexOf(a);
                 const bP = priority.indexOf(b);
 
-                // Prioritize the top 8 popular currencies
                 if (aP !== -1 && bP === -1) return -1;
                 if (aP === -1 && bP !== -1) return 1;
                 if (aP !== -1 && bP !== -1) return aP - bP;
 
-                // Alphabetical sort for the rest
                 return a.localeCompare(b);
             });
 
 
             sortedCurrencies.forEach(code => {
                 const countryCode = countryList[code];
-                const chineseName = chineseCurrencyNames[code] || ''; // Get Chinese name
+                const chineseName = chineseCurrencyNames[code] || '';
                 
                 const item = document.createElement('div');
-                // Compact card design for grid
                 item.className = 'bg-white p-3 rounded-lg border-2 border-gray-200 shadow hover:shadow-lg transition duration-200 ease-in-out flex flex-col space-y-2';
                 
                 item.innerHTML = `
@@ -337,7 +363,7 @@
                              onerror="this.onerror=null; this.src='https://placehold.co/64x64/d1d5db/4b5563?text=?';" 
                              class="w-6 h-6 rounded-full border border-gray-100 shadow-sm" alt="Flag for ${code}">
                         
-                        <!-- Currency Code and Chinese Name (Updated to include new element) -->
+                        <!-- Currency Code and Chinese Name -->
                         <div class="flex flex-col leading-tight">
                             <span class="font-bold text-gray-800 text-sm md:text-base">${code}</span>
                             <span class="text-gray-400 text-xs">${chineseName}</span>
@@ -350,27 +376,54 @@
                            class="currency-input w-full p-2 text-sm md:text-base border border-indigo-300 rounded-lg font-mono focus:outline-none focus:ring-2 transition duration-150">
                 `;
 
-                // Add the input listener
                 const inputElement = item.querySelector('input');
-                // Use 'input' event for real-time conversion
                 inputElement.addEventListener('input', handleInput);
                 
                 currencyListContainer.appendChild(item);
             });
-
-            // Set the initial amount for the base currency input after rendering
-            const initialBaseInput = document.querySelector(`[data-currency="${currentBaseCurrency}"]`);
-            if (initialBaseInput) {
-                initialBaseInput.value = currentAmount.toFixed(2);
+        }
+        
+        /**
+         * OPTIMIZATION: New function to load data on startup.
+         */
+        function loadInitialData() {
+            // 1. Load from cache first
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            if (cachedData) {
+                try {
+                    const { rates, time } = JSON.parse(cachedData);
+                    ratesFromApi = rates;
+                    lastUpdateTime = time;
+                    document.getElementById('last-update-time').innerText = `Last updated: ${lastUpdateTime}`;
+                    
+                    const initialBaseInput = document.querySelector(`[data-currency="${currentBaseCurrency}"]`);
+                    if (initialBaseInput) {
+                        initialBaseInput.value = currentAmount.toFixed(2);
+                    }
+                    
+                    updateAllInputs(); // Update all other inputs based on cache
+                    updateCardStyles();
+                } catch (e) {
+                    console.error("Failed to parse cache", e);
+                    localStorage.removeItem(CACHE_KEY); // Clear bad cache
+                }
             }
-            updateCardStyles(); // Initial card style setup
+            
+            // 2. Always fetch fresh data on load (silently)
+            // This will update the UI and cache when it finishes.
+            fetchLatestRates(false);
         }
 
         // --- Initialization ---
         window.onload = () => {
+            // 1. Render the HTML structure
             renderCurrencyList();
-            // Start by fetching rates relative to the initial base currency (USD)
-            fetchRates(currentBaseCurrency);
+            
+            // 2. Add listener for the new refresh button
+            document.getElementById('refresh-button').addEventListener('click', () => fetchLatestRates(true));
+            
+            // 3. Load initial data (from cache, then fetch new)
+            loadInitialData();
         };
 
     </script>
